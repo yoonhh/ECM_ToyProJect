@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="clMapper">
+
+	<resultMap type="client" id="clientlResultSet">
+
+
+		<result column="IMG_KEY" property="imgKey" />
+		<result column="CUST_NO" property="custNo" />
+		<result column="CUST_NM" property="custNm" />
+		<result column="RRN_NO" property="rrnNo" />
+		<result column="ENR_USER_ID" property="enrUserId" />
+		<result column="ENR_DTM" property="enrDtm" />
+		<result column="CHANGE_ENR_USER_ID" property="changeEnrUserId" />
+		<result column="CHANGE_ENR_DTM" property="changeEnrDtm" />
+
+
+	</resultMap>
+
+
+
+	<insert id="insertClient" parameterType="client">
+		INSERT INTO CLIENT_TB(
+		IMG_KEY,
+		CUST_NO,
+		CUST_NM,
+		RRN_NO
+
+		) VALUES (
+		#{imgKey}
+		, #{custNo}
+		, #{custNm}
+		, #{rrnNo}
+
+
+		)
+
+	</insert>
+	
+	<select id="selectClientRrn" resultType="string"
+		parameterType="string">
+		 SELECT DISTINCT RRN_NO FROM CLIENT_TB
+		WHERE RRN_NO = #{rrnNo}
+	</select>
+
+	<select id="selectRrn" resultType="string"
+		parameterType="string">
+		SELECT * FROM CLIENT_TB
+		WHERE RRN_NO = #{rrnNo} AND IMG_KEY LIKE '%LN%'
+
+	</select>
+	
+	
+
+
+	<select id="selectCustNo" resultType="string"
+		parameterType="string">
+		SELECT DISTINCT CUST_NO FROM CLIENT_TB
+		WHERE RRN_NO = #{rrnNo} AND (IMG_KEY LIKE '%LN%' OR IMG_KEY LIKE '%DP%' OR IMG_KEY LIKE '%CO%')
+
+	</select>
+	
+	<!-- <select id="selectimgKey" resultType="string"
+		parameterType="string">
+		SELECT * FROM CLIENT_TB
+		WHERE RRN_NO = #{rrnNo} AND IMG_KEY LIKE '%LO%'
+
+	</select> -->
+	
+	<select id="selectimgKey2" resultType="string"
+		parameterType="string">
+		SELECT IMG_KEY FROM CLIENT_TB
+		WHERE RRN_NO = #{rrnNo} AND IMG_KEY LIKE '%LN%'
+
+	</select>
+	
+	<select id="selectdpRrn" resultType="string"
+		parameterType="string">
+		SELECT * FROM CLIENT_TB
+		WHERE RRN_NO = #{rrnNo} AND IMG_KEY LIKE '%DP%'
+
+	</select>
+
+
+	<select id="selectdpCustNo" resultType="string"
+		parameterType="string">
+		SELECT DISTINCT CUST_NO FROM CLIENT_TB
+		WHERE RRN_NO = #{rrnNo} AND (IMG_KEY LIKE '%LN%' OR IMG_KEY LIKE '%DP%' OR IMG_KEY LIKE '%CO%')
+
+
+	</select>
+	
+	<select id="selectdpimgKey" resultType="string"
+		parameterType="string">
+		SELECT * FROM CLIENT_TB
+		WHERE RRN_NO = #{rrnNo} AND IMG_KEY LIKE '%DP%'
+
+	</select>
+	
+	<select id="selectdpimgKey2" resultType="string"
+		parameterType="string">
+		SELECT IMG_KEY FROM CLIENT_TB
+		WHERE RRN_NO = #{rrnNo} AND IMG_KEY LIKE '%DP%'
+
+	</select>
+	
+	<select id="selectcoRrn" resultType="string"
+		parameterType="string">
+		SELECT * FROM CLIENT_TB
+		WHERE RRN_NO = #{rrnNo} AND IMG_KEY LIKE '%CO%'
+
+	</select>
+
+
+	<select id="selectcoCustNo" resultType="string"
+		parameterType="string">
+		SELECT DISTINCT CUST_NO FROM CLIENT_TB
+		WHERE RRN_NO = #{rrnNo} AND (IMG_KEY LIKE '%LN%' OR IMG_KEY LIKE '%DP%' OR IMG_KEY LIKE '%CO%')
+
+
+	</select>
+	
+	<select id="selectcoimgKey" resultType="string"
+		parameterType="string">
+		SELECT * FROM CLIENT_TB
+		WHERE RRN_NO = #{rrnNo} AND IMG_KEY LIKE '%CO%'
+
+	</select>
+	
+	<select id="selectcoimgKey2" resultType="string"
+		parameterType="string">
+		SELECT IMG_KEY FROM CLIENT_TB
+		WHERE RRN_NO = #{rrnNo} AND IMG_KEY LIKE '%CO%'
+
+	</select>
+	
+
+
+
+
+</mapper>

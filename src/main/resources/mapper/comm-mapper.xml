@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="commMapper">
+
+
+
+	<resultMap type="comm" id="commResultSet">
+
+		<result column="IMG_KEY" property="imgKey" />
+		<result column="CUST_NO" property="custNo" />
+		<result column="CUST_NM" property="custNm" />
+		<result column="RRN_NO" property="rrnNo" />
+		<result column="ENR_USER_ID" property="enrUserId" />
+		<result column="ENR_DTM" property="enrDtm" />
+		<result column="CHANGE_ENR_USER_ID" property="changeEnrUserId" />
+		<result column="CHANGE_ENR_DTM" property="changeEnrDtm" />
+		<result column="DEL_YN" property="delYN" />
+
+
+
+	</resultMap>
+
+	<insert id="insertCo" parameterType="comm">
+		INSERT INTO COMMON_TB(
+		IMG_KEY,
+		CUST_NO,
+		CUST_NM,
+		RRN_NO,
+		ENR_USER_ID,
+		ENR_DTM,
+		DEL_YN
+		) VALUES (
+		#{imgKey}
+		, #{custNo}
+		, #{custNm}
+		, #{rrnNo}
+		, #{enrUserId}
+		, #{enrDtm}
+		,
+		'N'
+
+		)
+
+	</insert>
+
+
+
+	<select id="selectcoListCount" resultType="Integer">
+		SELECT COUNT(DISTINCT
+		CUST_NO)
+		FROM COMMON_TB
+		WHERE DEL_YN = 'N'
+	</select>
+
+	<select id="selectcoList" resultMap="commResultSet">
+		SELECT DISTINCT
+		CUST_NO,
+		IMG_KEY,
+		CUST_NM,
+		RRN_NO,
+		ENR_USER_ID,
+		ENR_DTM
+		FROM COMMON_TB
+		WHERE DEL_YN =
+		'N'
+		ORDER BY ENR_DTM DESC
+	</select>
+
+	<select id="searchcoListCount" resultType="Integer">
+		SELECT COUNT(DISTINCT CUST_NO)
+		FROM COMMON_TB
+		WHERE DEL_YN = 'N'
+		<if test='keyword != null and keyword !=""'>
+			AND
+			<choose>
+				<when test="condition == 'imgKey'">
+					IMG_KEY LIKE '%${keyword}%'
+				</when>
+				
+				<when test="condition == 'custNo'">
+					CUST_NO LIKE '%${keyword}%'
+				</when>
+			</choose>
+		</if>
+
+	</select>
+
+	<select id="searchcoList" resultMap="commResultSet">
+		SELECT DISTINCT
+		CUST_NO,
+		IMG_KEY,
+		CUST_NM,
+		RRN_NO,
+		ENR_USER_ID,
+		ENR_DTM
+		FROM
+		COMMON_TB
+		WHERE DEL_YN = 'N'
+
+
+		<if test='keyword != null and keyword !=""'>
+			AND
+			<choose>
+				<when test="condition == 'imgKey'">
+					IMG_KEY LIKE '%${keyword}%'
+				</when>
+				
+				<when test="condition == 'custNo'">
+					CUST_NO LIKE '%${keyword}%'
+				</when>
+			</choose>
+		</if>
+		ORDER BY ENR_DTM DESC
+
+	</select>
+
+
+	<select id="selectCoIntercount" resultType="Integer"
+		parameterType="string">
+		SELECT COUNT(*) FROM COMMON_TB C
+		JOIN INTERGRATE I
+		USING(IMG_KEY)
+		WHERE I.DEL_YN = 'N' AND C.RRN_NO = #{rrnNo}
+
+	</select>
+
+
+	<update id="coInterchangeStatus" parameterType="string">
+		UPDATE COMMON_TB
+		SET
+		DEL_YN = 'Y'
+		WHERE RRN_NO = #{rrnNo}
+	</update>
+
+	<update id="coInterchangeStatusN" parameterType="string">
+		UPDATE COMMON_TB
+		SET
+		DEL_YN = 'N'
+		WHERE RRN_NO = #{rrnNo}
+	</update>
+
+	<update id="coUpdateStatus" parameterType="string">
+		UPDATE COMMON_TB SET
+		DEL_YN='Y'
+		WHERE RRN_NO=#{rrnNo} AND (SELECT COUNT(*) FROM INTERGRATE I
+		JOIN COMMON_TB C USING(IMG_KEY)
+		WHERE
+		I.MAIN_CATE_CD =
+		'01' AND C.RRN_NO=#{rrnNo}) = ( SELECT COUNT(*) FROM
+		INTERGRATE I
+		JOIN COMMON_TB C USING(IMG_KEY)
+		WHERE
+		I.MAIN_CATE_CD =
+		'01' AND I.DEL_YN ='Y' AND C.RRN_NO=#{rrnNo})
+
+	</update>
+
+	<select id="corrnNoY" resultType="String">
+		SELECT DISTINCT C.RRN_NO
+		FROM
+		COMMON_TB C
+		JOIN INTERGRATE I USING(IMG_KEY)
+		WHERE I.DEL_YN = 'Y'
+	</select>
+
+
+</mapper>

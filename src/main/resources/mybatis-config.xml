@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+  PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-config.dtd">
+  
+ 
+<configuration>
+
+	
+	<settings>
+		
+		<setting name = "jdbcTypeForNull" value="NULL"/>
+		<setting name = "logImpl" value="LOG4J"/>
+		<!--  마이바티스 쿼리문, 파라미터값, 실행겨로가를 로그를 통해 확인하는 방법(실제 운영환경에서는 설정에서 빼야한다 
+		
+				Value 값에는 로그 출력 구현객체로 LOG4J를 지정한것-->
+		
+		<!-- 
+			
+		 -->
+	</settings>
+	
+
+	 <typeAliases>
+	 	<typeAlias type="com.ecm.spring.enroll.model.vo.Code" alias="code"/>
+	 	<typeAlias type="com.ecm.spring.enroll.model.vo.Employee" alias="empl"/>
+	 	<typeAlias type="com.ecm.spring.enroll.model.vo.Loan" alias="loan"/>
+	 	<typeAlias type="com.ecm.spring.enroll.model.vo.Deposit" alias="depo"/>
+	 	<typeAlias type="com.ecm.spring.enroll.model.vo.Common" alias="comm"/>
+	 	<typeAlias type="com.ecm.spring.enroll.model.vo.Intergrate" alias="inter"/>
+	 	<typeAlias type="com.ecm.spring.enroll.model.vo.Client" alias="client"/>
+	 	
+	 </typeAliases>
+	 
+	 <!-- 
+	 	enviroments, dataSource에 기술햇던 DB연결정보는 root-context.xml에 작성한다.
+	 	->DB등록은 서버연동과 "동시에" 이루어져야하기 때문에
+	 	서버연결과 동시에 읽혀지는 root-context.xml에 기술하는것
+	  -->
+	 
+
+  <mappers>
+    <mapper resource="/mapper/code-mapper.xml" />
+	<mapper resource="/mapper/employee-mapper.xml" />
+	<mapper resource="/mapper/loan-mapper.xml" />
+	<mapper resource="/mapper/depo-mapper.xml" />
+	<mapper resource="/mapper/comm-mapper.xml" />
+	<mapper resource="/mapper/inter-mapper.xml" />
+	<mapper resource="/mapper/client-mapper.xml" />
+  </mappers>
+  
+  
+</configuration>

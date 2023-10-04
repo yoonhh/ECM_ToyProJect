@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="interMapper">
+
+<resultMap type="inter" id="interlResultSet" >
+	
+	<result column="MAIN_CATE_CD" property="mainCateCd"/>
+	<result column="IMG_KEY" property="imgKey"/>
+	<result column="ELEMENTID" property="elementId"/>
+	<result column="EN_SEQ" property="enSeq"/>
+	<result column="FILE_NM" property="fileNm"/>
+	<result column="FILE_EXT" property="fileExt"/>
+	<result column="DOC_CD" property="docCd"/>
+	<result column="ORG_CD" property="orgCd"/>
+	<result column="FILE_EXT" property="fileExt"/>
+	<result column="ENR_DTM" property="enrDtm"/>
+	<result column="CHANGE_ENR_USER_ID" property="changeEnrUserId"/>
+	<result column="CHANGE_ENR_DTM" property="changeEnrDtm"/>
+	<result column="DEL_YN" property="delYN"/>
+	<result column="RRN_NO" property="rrnNo" />
+	
+	</resultMap>
+	
+	<insert id = "insertInter" parameterType="inter">
+		INSERT INTO INTERGRATE(
+			MAIN_CATE_CD,
+			ELEMENTID,
+			IMG_KEY,
+			EN_SEQ,
+			FILE_NM,
+			FILE_EXT,
+			DOC_CD,
+			ORG_CD,
+			ENR_USER_ID,
+			ENR_DTM,
+			DEL_YN
+		) VALUES (
+			#{mainCateCd}
+		  , #{elementId}
+		  , #{imgKey}
+		  , #{enSeq}
+		  , #{fileNm}
+		  , #{fileExt}
+		  , #{docCd}
+		  , #{orgCd}
+		  , #{enrUserId}
+		  , #{enrDtm}
+		  , 'N'
+		  
+		)
+
+</insert>
+
+<select id="selectCountLoImgKey" resultType="Integer" parameterType="string">
+
+	SELECT COUNT(IMG_KEY)+1 AS EN_SEQ
+		FROM INTERGRATE
+        JOIN CLIENT_TB USING (IMG_KEY)
+		WHERE RRN_NO = #{rrnNo} AND IMG_KEY LIKE '%LN%'
+
+</select>
+
+<select id="selectCountDpImgKey" resultType="Integer" parameterType="string">
+
+	SELECT COUNT(IMG_KEY)+1 AS EN_SEQ
+		FROM INTERGRATE
+        JOIN CLIENT_TB USING (IMG_KEY)
+		WHERE  RRN_NO = #{rrnNo} AND IMG_KEY LIKE '%DP%'
+
+</select>
+
+<select id="selectCountCoImgKey" resultType="Integer" parameterType="string">
+
+	SELECT COUNT(IMG_KEY)+1 AS EN_SEQ
+		FROM INTERGRATE
+        JOIN CLIENT_TB USING (IMG_KEY)
+		WHERE  RRN_NO = #{rrnNo} AND IMG_KEY LIKE '%CO%'
+
+</select>
+
+
+<select id="selectcomList" resultMap="interlResultSet" parameterType="string">
+	SELECT
+	I.ELEMENTID, I.EN_SEQ ,I.DEL_YN,I.DOC_CD,I.ENR_DTM
+	FROM INTERGRATE I
+	JOIN COMMON_TB C USING (IMG_KEY)
+	WHERE C.RRN_NO =#{rrnNo} AND I.DEL_YN = 'N'
+	ORDER BY EN_SEQ ASC
+
+</select>
+
+<select id="selectdpList" resultMap="interlResultSet" parameterType="string">
+	SELECT
+	I.ELEMENTID, I.EN_SEQ ,I.DEL_YN,I.DOC_CD,I.ENR_DTM
+	FROM INTERGRATE I
+	JOIN DEPOSIT_TB D USING (IMG_KEY)
+	WHERE D.RRN_NO =#{rrnNo} AND I.DEL_YN = 'N'
+	ORDER BY EN_SEQ ASC
+
+</select>
+
+<select id="selectloList" resultMap="interlResultSet" parameterType="string">
+	SELECT
+	I.ELEMENTID, I.EN_SEQ ,I.DEL_YN,I.DOC_CD,I.ENR_DTM
+	FROM INTERGRATE I
+	JOIN LOAN_TB L USING (IMG_KEY)
+	WHERE L.RRN_NO =#{rrnNo} AND I.DEL_YN = 'N'
+	ORDER BY EN_SEQ ASC
+
+</select>
+
+	<update id="lochangeStatus" parameterType="string">
+    UPDATE INTERGRATE SET
+     DEL_YN = 'Y'
+    WHERE ELEMENTID = #{elementId}
+   </update>
+   
+   <update id="dpchangeStatus" parameterType="string">
+    UPDATE INTERGRATE SET
+     DEL_YN = 'Y'
+    WHERE ELEMENTID = #{elementId}
+   </update>
+   
+   <update id="cochangeStatus" parameterType="string">
+    UPDATE INTERGRATE SET
+     DEL_YN = 'Y'
+    WHERE ELEMENTID = #{elementId}
+   </update>
+   
+   <select id="selectFileName" resultType="string" parameterType="string">
+
+	SELECT FILE_NM FROM INTERGRATE
+	WHERE ELEMENTID = #{test}
+
+</select>
+
+
+ <select id="selectFileExt" resultType="string" parameterType="string">
+
+	SELECT FILE_EXT FROM INTERGRATE
+	WHERE ELEMENTID = #{test}
+
+</select>
+
+
+<update id="interUpdateStatus" parameterType="string">
+	UPDATE INTERGRATE SET
+	DEL_YN='Y'
+	WHERE DOC_CD=#{docCd}
+
+</update>
+
+
+</mapper>

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="loanMapper">
+
+	<resultMap type="loan" id="loanlResultSet">
+
+		<result column="IMG_KEY" property="imgKey" />
+		<result column="CUST_NO" property="custNo" />
+		<result column="CUST_NM" property="custNm" />
+		<result column="RRN_NO" property="rrnNo" />
+		<result column="ENR_USER_ID" property="enrUserId" />
+		<result column="ENR_DTM" property="enrDtm" />
+		<result column="CHANGE_ENR_USER_ID" property="changeEnrUserId" />
+		<result column="CHANGE_ENR_DTM" property="changeEnrDtm" />
+		<result column="DEL_YN" property="delYN" />
+
+
+
+	</resultMap>
+
+	<insert id="insertLo" parameterType="loan">
+		INSERT INTO LOAN_TB(
+		IMG_KEY,
+		CUST_NO,
+		CUST_NM,
+		RRN_NO,
+		ENR_USER_ID,
+		ENR_DTM,
+		DEL_YN
+		) VALUES (
+		#{imgKey}
+		, #{custNo}
+		, #{custNm}
+		, #{rrnNo}
+		, #{enrUserId}
+		, #{enrDtm}
+		,
+		'N'
+
+		)
+
+	</insert>
+
+	<select id="selectLoListCount" resultType="Integer">
+		SELECT COUNT(*)
+		FROM
+		LOAN_TB
+		WHERE DEL_YN = 'N'
+	</select>
+
+	<select id="selectLoList" resultMap="loanlResultSet">
+		SELECT
+		CUST_NO,
+		IMG_KEY,
+		CUST_NM,
+		RRN_NO,
+		ENR_USER_ID,
+		ENR_DTM
+		FROM LOAN_TB
+		WHERE DEL_YN =
+		'N'
+		ORDER
+		BY ENR_DTM DESC
+	</select>
+
+	<select id="searchLoListCount" resultType="Integer">
+		SELECT COUNT(*)
+		FROM LOAN_TB
+		WHERE DEL_YN = 'N'
+		<if test='keyword != null and keyword !=""'>
+			AND
+			<choose>
+				<when test="condition == 'imgKey'">
+					IMG_KEY LIKE '%${keyword}%'
+				</when>
+				
+				<when test="condition == 'custNo'">
+					CUST_NO LIKE '%${keyword}%'
+				</when>
+			</choose>
+		</if>
+
+	</select>
+
+	<select id="searchLoList" resultMap="loanlResultSet">
+		SELECT
+		CUST_NO,
+		IMG_KEY,
+		CUST_NM,
+		RRN_NO,
+		ENR_USER_ID,
+		ENR_DTM
+		FROM LOAN_TB
+		WHERE DEL_YN = 'N'
+
+
+		<if test='keyword != null and keyword !=""'>
+			AND
+			<choose>
+				<when test="condition == 'imgKey'">
+					IMG_KEY LIKE '%${keyword}%'
+				</when>
+				
+				<when test="condition == 'custNo'">
+					CUST_NO LIKE '%${keyword}%'
+				</when>
+			</choose>
+		</if>
+		ORDER BY ENR_DTM DESC
+
+	</select>
+
+	<select id="selectLoIntercount" resultType="Integer"
+		parameterType="string">
+		SELECT COUNT(*) FROM LOAN_TB L
+		JOIN INTERGRATE I
+		USING(IMG_KEY)
+		WHERE I.DEL_YN = 'N' AND L.RRN_NO = #{rrnNo}
+
+	</select>
+
+
+
+	<update id="loInterchangeStatus" parameterType="string">
+		UPDATE LOAN_TB
+		SET
+		DEL_YN = 'Y'
+		WHERE RRN_NO = #{rrnNo}
+	</update>
+
+	<update id="loInterchangeStatusN" parameterType="string">
+		UPDATE LOAN_TB
+		SET
+		DEL_YN = 'N'
+		WHERE RRN_NO = #{rrnNo}
+	</update>
+
+
+	<update id="loUpdateStatus"  parameterType="string">
+		UPDATE LOAN_TB SET
+		DEL_YN='Y'
+		WHERE RRN_NO=#{rrnNo} AND (SELECT COUNT(*) FROM INTERGRATE I
+         JOIN LOAN_TB L USING(IMG_KEY)
+        WHERE
+		I.MAIN_CATE_CD =
+		'01' AND L.RRN_NO=#{rrnNo}) = ( SELECT COUNT(*) FROM INTERGRATE I
+        JOIN LOAN_TB L USING(IMG_KEY)
+        WHERE
+		I.MAIN_CATE_CD =
+		'01' AND I.DEL_YN ='Y' AND L.RRN_NO=#{rrnNo})
+
+	</update>
+	
+	<select id="lorrnNoY" resultType="String">
+		SELECT DISTINCT L.RRN_NO 
+   	 	FROM LOAN_TB L
+    	JOIN INTERGRATE I USING(IMG_KEY)
+    	WHERE I.DEL_YN = 'Y'
+	</select> 
+
+
+
+
+
+
+
+
+
+</mapper>
